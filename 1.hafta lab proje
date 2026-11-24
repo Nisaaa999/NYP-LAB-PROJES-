@@ -1,1 +1,150 @@
+//Akilli ev projesi 1.hafta
+using System;
+using System.Collections.Generic;
+enum CihazTuru
+{
+    Lamba,
+    Klima,
+    GuvenlikSistemi,
+}
+class Cihaz
+{
+    public string Kimlik { get; set; }
+    public string Ad { get; set; }
+    public CihazTuru Tur { get; set; }
+    public bool AcikMi { get; private set; }
+     public Cihaz(string kimlik, string ad, CihazTuru tur)
+    {
+        AcikMi = false;
+        Kimlik = kimlik;
+        Ad = ad;
+        Tur = tur;
+    }
+    public void Acik()
+    {
+        AcikMi = true;
+        Console.WriteLine($"{Ad} acildi.");
+    }
+    public void Kapali()
+    {
+        AcikMi = false;
+        Console.WriteLine($"{Ad} kapali.");
+    }
+    public void BilgileriGoster()
+    {
+        Console.WriteLine("Ad:" + Ad);
+        Console.WriteLine("Kimlik: " + Kimlik);
+        Console.WriteLine("Tur: " + Tur);
+        Console.WriteLine("Acik Mi: " + AcikMi);
+    }
 
+}
+class Program
+{
+    static void Main()
+    {
+        List<Cihaz> cihazlar = new List<Cihaz>();
+
+        cihazlar.Add(new Cihaz("1", "Salon Lambasi", CihazTuru.Lamba));
+        cihazlar.Add(new Cihaz("2", "Klima", CihazTuru.Klima));
+        cihazlar.Add(new Cihaz("3", "Guvenlik Sistemi", CihazTuru.GuvenlikSistemi));
+
+        while (true)
+        {
+            Console.WriteLine("\n--- AKILLI CIHAZ SISTEMI ---");
+            Console.WriteLine("1- Cihazlari Listele");
+            Console.WriteLine("2- Yeni Cihaz Ekle");
+            Console.WriteLine("3- Cihaz Ac");
+            Console.WriteLine("4- Cihaz Kapat");
+            Console.WriteLine("5- Cikis");
+            Console.Write("Seciminiz: ");
+
+            int secim = Convert.ToInt32(Console.ReadLine());
+
+            switch (secim)
+            {
+                case 1:
+                    foreach (Cihaz cihaz in cihazlar)
+                    {
+                        cihaz.BilgileriGoster();
+                    }
+                    break;
+
+                case 2:
+                    Console.Write("Cihaz Kimligi: ");
+                    string kimlik = Console.ReadLine();
+
+                    bool mevcutMu = cihazlar.Exists(c => c.Kimlik == kimlik);
+
+                    if (mevcutMu)
+                    {
+                        Console.WriteLine("Bu kimlik zaten mevcut!");
+                        break;
+                    }
+
+                    Console.Write("Cihaz Adi: ");
+                    string ad = Console.ReadLine();
+
+                    Console.WriteLine("Cihaz Turu Seciniz:");
+                    Console.WriteLine("0- Lamba");
+                    Console.WriteLine("1- Klima");
+                    Console.WriteLine("2- Guvenlik Sistemi");
+
+                    int turSecim = Convert.ToInt32(Console.ReadLine());
+
+                    if (turSecim < 0 || turSecim > 2)
+                    {
+                        Console.WriteLine("Gecersiz cihaz turu!");
+                        break;
+                    }
+
+                    CihazTuru tur = (CihazTuru)turSecim;
+
+                    cihazlar.Add(new Cihaz(kimlik, ad, tur));
+
+                    Console.WriteLine("Cihaz eklendi.");
+                    break;
+
+                case 3:
+                    Console.Write("Acilacak cihazin kimligini giriniz: ");
+                    string acKimlik = Console.ReadLine();
+
+                    Cihaz acilacak = cihazlar.Find(c => c.Kimlik == acKimlik);
+
+                    if (acilacak != null)
+                    {
+                        acilacak.Acik();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Cihaz bulunamadi!");
+                    }
+                    break;
+
+                case 4:
+                    Console.Write("Kapatilacak cihazin kimligini giriniz: ");
+                    string kapatKimlik = Console.ReadLine();
+
+                    Cihaz kapatilacak = cihazlar.Find(c => c.Kimlik == kapatKimlik);
+
+                    if (kapatilacak != null)
+                    {
+                        kapatilacak.Kapali();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Cihaz bulunamadi!");
+                    }
+                    break;
+
+                case 5:
+                    Console.WriteLine("Program kapatiliyor...");
+                    return;
+
+                default:
+                    Console.WriteLine("Gecersiz secim!");
+                    break;
+            }
+        }
+    }
+}
